@@ -3,20 +3,33 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/ioctl.h>
-// What makes a ball look like it's rolling instead of sliding?
-
+// okay now the mission is rotate
+// make arr that have the old data and new 
+#define M_PI 3.14159265358979323846
 void ft_circle()
 {
     struct winsize w;
     int d_x = 0;
     int d_y = 0;
     int radius = 5;
+    int coor_x = 0;
+    int coor_y = 0;
+    int value =0;
+    int s_center_x = 0,s_center_y = 0;
+    int R = 3;
+
+    int x_prim = 0, y_prim = 0, z_prim=0;
+    double sin_prim = 0;
+    double cos_prim = 0;
     int center_x, center_y, r;
     int i ,j;
     int d = 0;
     int distanc_a,distanc_b,center;
     int x=0,y=0;
-    
+    double marker_angle_degrees = 0;
+    marker_angle_degrees = marker_angle_degrees * (M_PI / 180.0);
+    double s = sin(marker_angle_degrees);
+    double c = cos(marker_angle_degrees);
 
     // char **character = malloc(sizeof(char*)*6);
     // character[0][0] = "#";
@@ -30,45 +43,297 @@ void ft_circle()
     char **arr = malloc(sizeof(char*)*w.ws_row);
     if (arr == NULL)
     return;
-    
+    char **new_arr = malloc(sizeof(char*)*w.ws_row);
+    if (arr == NULL)
+    return;
+    int z = 0;
     int r_c = 0;
     int row = 0;
     int col = 0;
     // char *character = malloc(sizeof(char)*5);
     
-    char character[] = {'#','%','*','~','.'};
+    char character[] = {'#','-','.','~','*'};
     // char temp;
     char marker = '|';
     int place_marker = 0 ;
-    // int dev = 5/2;
-    int check = 1;
+    char *temp;
+    marker_angle_degrees = 0;
+    double theta = 0;
+    row = 0;
+    col = 0;
+    while(row < w.ws_row)
+    {
+        // printf("%d here\n",row);
+        col = 0;
+        arr[row] = malloc(sizeof(char)*w.ws_col);
+        new_arr[row] = malloc(sizeof(char)*w.ws_col);
+        while(col < w.ws_col)
+        {
+            // printf("heere raduios:%d\n",col);
+            arr[row][col]= ' ';
+            new_arr[row][col]= ' ';   
+            col+=1;
+        }
+        row+=1;
+    }
+    x=0;
+    y=0;
+    center_x = d_x;
+    center_y = d_y;
+    int center_z = 0;
+    int dz = 0;
+
+    r = radius+center_x;
+    r_c = radius+center_y;
+    // printf("center_x: %d,center_y:%d\n",center_x,center_y);
+    i = -r,
+    j = -r_c,
+    distanc_a=0,
+    distanc_b = 0;
+    int e =0;
+    while (i <= r)
+    {
+
+        e = -r_c;
+        while (e <= r_c)
+        {
+            value = pow(r,2)- pow(i,2)-pow(e,2);
+            // value = (pow(i,2)+pow(j,2));
+            if (value < 0)
+            {
+                e +=1;
+                continue;
+            }
+            j = sqrt(value);
+            distanc_a = i - center_x;
+            distanc_b = j - center_y;
+            dz = e - center_z;
+            
+            d = sqrt(pow(distanc_a, 2)+pow(distanc_b, 2)+pow(dz, 2));
+            // R = sqrt(pow(distanc_a, 2)+pow(distanc_b, 2))-pow(dz,2);
+            
+            x = radius+center_x+i;
+            y = radius+center_y+j;
+            z = radius + center_z + e;
+            
+            
+            if ((x >= w.ws_row) || (y>= w.ws_col)|| (x >= w.ws_row))
+            break;
+            if(d <= 1)
+            {
+                // arr[x][y] = character[3];
+                arr[x][y] = character[3];
+            }
+            else if (d <= 3)
+            {
+                // arr[x][y] = character[2];
+                arr[x][z] = character[2];
+            }
+            else if(d <= 4)
+            {
+                // arr[x][y] = character[1];
+                arr[x][z] = character[1];
+            }
+            else if(d <= radius)
+            {
+                // arr[x][y] = character[0];
+                arr[x][z] = character[0];
+            }
+            else if(d <= radius)
+            {
+                // arr[x][y] = character[4];
+                arr[x][z] = character[4];
+                // printf("herreeeeeeeeeee :%c\n",character[4]);
+            }
+            else
+                // arr[x][y] = ' ';
+                arr[x][z] = ' ';
+
+            j = -sqrt(value);
+            distanc_a = i - center_x;
+            distanc_b = j - center_y;
+            dz = e - center_z;
+            
+            d = sqrt(pow(distanc_a, 2)+pow(distanc_b, 2)+pow(dz, 2));
+            // d = -sqrt(pow(distanc_a, 2)+pow(distanc_b, 2)+pow(dz, 2));
+            // d = sqrt(pow(distanc_a, 2)+pow(dz, 2));
+            
+            x = radius+center_x+i;
+            y = radius+center_y+j;
+            z = radius + center_z + e;
+            
+            
+            if ((x >= w.ws_row) || (y>= w.ws_col)|| (x >= w.ws_row))
+            break;
+            if(d <= 1)
+            {
+                // arr[x][y] = character[3];
+                arr[x][z] = character[3];
+            }
+            else if (d <= 3)
+            {
+                // arr[x][y] = character[2];
+                arr[x][z] = character[2];
+            }
+            else if(d <= 4)
+            {
+                // arr[x][y] = character[1];
+                arr[x][z] = character[1];
+            }
+            else if(d <= radius)
+            {
+                // arr[x][y] = character[4];
+                arr[x][z] = character[4];
+                // printf("herreeeeeeeeeee :%c\n",character[4]);
+            }
+            else if(d <= radius)
+            {
+                // arr[x][y] = character[4];
+                arr[x][z] = character[4];
+                // printf("herreeeeeeeeeee :%c\n",character[4]);
+            }
+            else
+                // arr[x][y] = ' ';
+                arr[x][z] = ' ';
+            e +=1;
+        }
+   
+        printf("\n");
+        i +=1;
+        x+=1;     
+    }
+    int angle;
+
+    i =-r_c,j=0,angle=0;
+    while(angle <= 360)
+    {
+        s_center_x = radius *cos(angle);
+        s_center_y = radius*sin(angle);
+        r = R+center_x;
+        r_c = R+center_y;
+        while (i <= r)
+        {
+
+            e = -r_c;
+            while (e <= r_c)
+            {
+                value = pow(r,2)- pow(i,2)-pow(e,2);
+                // value = (pow(i,2)+pow(j,2));
+                if (value < 0)
+                {
+                    e +=1;
+                    continue;
+                }
+                j = sqrt(value);
+                distanc_a = i - s_center_x;
+                distanc_b = j - s_center_y;
+                dz = e - center_z;
+                
+                d = sqrt(pow(distanc_a, 2)+pow(distanc_b, 2)+pow(dz, 2));
+                // R = sqrt(pow(distanc_a, 2)+pow(distanc_b, 2))-pow(dz,2);
+                
+                x = radius+s_center_x+i;
+                y = radius+s_center_y+j;
+                z = radius + center_z + e;
+                
+                
+                if ((x >= w.ws_row) || (y>= w.ws_col)|| (x >= w.ws_row))
+                break;
+                if(d <= 1)
+                {
+                    // arr[x][y] = character[3];
+                    arr[x][y] = character[3];
+                }
+                else if (d <= 3)
+                {
+                    // arr[x][y] = character[2];
+                    arr[x][z] = character[2];
+                }
+                else if(d <= 4)
+                {
+                    // arr[x][y] = character[1];
+                    arr[x][z] = character[1];
+                }
+                else if(d <= radius)
+                {
+                    // arr[x][y] = character[0];
+                    arr[x][z] = character[0];
+                }
+                else if(d <= radius)
+                {
+                    // arr[x][y] = character[4];
+                    arr[x][z] = character[4];
+                    // printf("herreeeeeeeeeee :%c\n",character[4]);
+                }
+                else
+                    // arr[x][y] = ' ';
+                    arr[x][z] = ' ';
+
+                j = -sqrt(value);
+                distanc_a = i - s_center_x;
+                distanc_b = j - s_center_y;
+                dz = e - center_z;
+                
+                d = sqrt(pow(distanc_a, 2)+pow(distanc_b, 2)+pow(dz, 2));
+                // d = -sqrt(pow(distanc_a, 2)+pow(distanc_b, 2)+pow(dz, 2));
+                // d = sqrt(pow(distanc_a, 2)+pow(dz, 2));
+                
+                x = radius+s_center_x+i;
+                y = radius+s_center_y+j;
+                z = radius + center_z + e;
+                
+                
+                if ((x >= w.ws_row) || (y>= w.ws_col)|| (x >= w.ws_row))
+                break;
+                if(d <= 1)
+                {
+                    // arr[x][y] = character[3];
+                    arr[x][z] = character[3];
+                }
+                else if (d <= 3)
+                {
+                    // arr[x][y] = character[2];
+                    arr[x][z] = character[2];
+                }
+                else if(d <= 4)
+                {
+                    // arr[x][y] = character[1];
+                    arr[x][z] = character[1];
+                }
+                else if(d <= radius)
+                {
+                    // arr[x][y] = character[4];
+                    arr[x][z] = character[4];
+                    // printf("herreeeeeeeeeee :%c\n",character[4]);
+                }
+                else if(d <= radius)
+                {
+                    // arr[x][y] = character[4];
+                    arr[x][z] = character[4];
+                    // printf("herreeeeeeeeeee :%c\n",character[4]);
+                }
+                else
+                    // arr[x][y] = ' ';
+                    arr[x][z] = ' ';
+                e +=1;
+            }
+    
+            printf("\n");
+            i +=1;
+            x+=1;     
+        }
+        angle +=1;
+    }
+    
+
     while(1)
     {
-    // printf("------>topp\n");
-    // printf("Rows: %d\n", w.ws_row);
-    // printf("Columns: %d\n", w.ws_col);
-        row = 0;
-        col = 0;
-        while(row < w.ws_row)
-        {
-            // printf("%d here\n",row);
-            col = 0;
-            arr[row] = malloc(sizeof(char)*w.ws_col);
-            while(col < w.ws_col)
-            {
-                // printf("heere raduios:%d\n",col);
-                arr[row][col]= ' ';
-                col+=1;
-            }
-            row+=1;
-        }
-        // printf("nap :%d",r);
-        // printf("--->top\n");
 
         x=0;
         y=0;
         center_x = d_x;
         center_y = d_y;
+        // hereeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
         r = radius+center_x;
         r_c = radius+center_y;
         // printf("center_x: %d,center_y:%d\n",center_x,center_y);
@@ -76,8 +341,6 @@ void ft_circle()
         j = -r_c,
         distanc_a=0,
         distanc_b = 0;
-        // printf("------>now\n");
-        // printf("row :%d,col:%d\n",row, col);
         while (i <= r)
         {
             y=0;
@@ -86,94 +349,104 @@ void ft_circle()
             // arr[x] = malloc(sizeof(char)*w.ws_col);
             while(j <= r_c)
             {
-                distanc_a = i - center_x;
-                distanc_b = j - center_y;
-                
-                
-                d = sqrt(pow(distanc_a,2)+pow(distanc_b,2));
-                
-                // printf("heere-- %d\n",d);
-                // printf("i: %d, j: %d\n",i,j);
-                // x = radius+center_x+i+center_y;
-                // y = radius+center_y+j+center_x;
-                x = radius+center_x+i;
-                y = radius+center_y+j;
-                // printf("x:%d, y:%d\n",x,y);
-                // printf("-debug ->->i: %d, j: %d,  x:%d, y:%d\n",i,j,radius+center_x+i+center_y,radius+center_y+j+center_x);
-                // printf("-debug ->->i: %d, j: %d,  x:%d, y:%d\n",i,j,x,y);
-                // printf("x: %d, y: %d\n",x,y);
-                if ((x >= w.ws_row) || (y>= w.ws_col))
-                break;
-                // ['#','%','*','~','.'];
-                // this not correct 
-                if(d >= place_marker)
+                y = 0;
+                e = -r_c;
+                while(e <= r_c)
                 {
-                    arr[x][y] = marker;
+                    distanc_a = i - center_x;
+                    distanc_b = j - center_y;
+                    dz = e - center_z;
+                    
+                    // d = sqrt(pow(distanc_a, 2)+pow(distanc_b, 2)+pow(dz, 2));
+                    d = sqrt(pow(distanc_a, 2)+pow(dz, 2));
+                    
+                    x = radius+center_x+i;
+                    y = radius+center_y+j;
+                    z = radius +center_z+e;
+                    
+                    // ['#','%','*','~','.'];
+                    // theta = atan2(distanc_b,distanc_a);
+                    theta = atan2(dz,distanc_a);
+                    theta += marker_angle_degrees;
+                    x_prim = center_x + (d *cos(theta));
+                    z_prim = center_z + (d *sin(theta));
+                    // y_prim = center_y + (d *sin(theta));
+                    
+                    x_prim = radius +center_x+ x_prim;
+                    z_prim = radius +center_y + z_prim;
+                    if ((x >= w.ws_row) || (z >= w.ws_col)|| (x_prim >= w.ws_row) || (z_prim>= w.ws_col) ||(z_prim < 0)||(x_prim<0))
+                    break;
+                    new_arr[x_prim][z_prim] = arr[x][z];
+                    e +=1;
+
                 }
-                else if((d <= 1) && (j > 0))
-                {
-                    arr[x][y] = character[3];
-                }
-                else if ((d <= 3) && (j >= 0))
-                {
-                    arr[x][y] = character[2];
-                }
-                else if(d <= 4)
-                {
-                    arr[x][y] = character[1];
-                }
-                else if((d <= radius) && (j < 0))
-                {
-                    arr[x][y] = character[0];
-                }
-                else if((d <= radius) && (j > 0))
-                {
-                    arr[x][y] = character[4];
-                    // printf("herreeeeeeeeeee :%c\n",character[4]);
-                }
-                else
-                    arr[x][y] = ' ';
-                    // printf("dot .> x:%d, y:%d\n",x,y);
-                
-                // printf("----> x:%d, y:%d\n",x,y);
-                    // printf("       "); half of moon
                 j+=1;
             }
             printf("\n");
             i +=1;
             x+=1;
+           
         }
-        // printf("there is the problem");
-        // h = 0;
-        // temp = 0;
-        // temp = character[0];
-        // if(h == 4)
-        //     h = 2;
-        // if(h+2 == 5)
-        // {
-        //     character[h] = character[h+1];
-        //     h = h+1;
-        // }
-        // while (h <= 5)
-        // {
-        //     if(h == 4)
-        //         h = 2;
-        //     if((h == dev) && (h+2 == 5))
-        //         character[h] = character[h+1];
-            
-        //     h+=1;
-        // }
-        // printf("------------------------------------>");
-        // h = 0;
-        // while (h <= 5)
-        // {
-        //     printf("\nthe prefect %c h:%d\n",character[h],h);
-        //     h+=1;
-        // }
-        
-        // printf("here :%c\n",character[0]);
-   
-        
+        angle=0;
+        while(angle <= 360)
+        {
+            s_center_x =R*cos(angle * (M_PI / 180.0));
+            s_center_y = R*sin(angle * (M_PI / 180.0));
+            r = R+s_center_x;
+            r_c = R+s_center_y;
+            i = -r,
+            j = -r_c,
+            distanc_a=0,
+            distanc_b = 0;
+    
+            while (i <= r)
+            {
+                y=0;
+                j = -r_c;
+                // printf("here");
+                // arr[x] = malloc(sizeof(char)*w.ws_col);
+                while(j <= r_c)
+                {
+                    y = 0;
+                    e = -r_c;
+                    while(e <= r_c)
+                    {
+                        distanc_a = i - s_center_x;
+                        distanc_b = j - s_center_y;
+                        dz = e - center_z;
+                        
+                        // d = sqrt(pow(distanc_a, 2)+pow(distanc_b, 2)+pow(dz, 2));
+                        d = sqrt(pow(distanc_a, 2)+pow(dz, 2));
+                        
+                        x = radius+s_center_x+i;
+                        y = radius+s_center_y+j;
+                        z = radius +center_z+e;
+                        
+                        // ['#','%','*','~','.'];
+                        // theta = atan2(distanc_b,distanc_a);
+                        theta = atan2(dz,distanc_a);
+                        theta = theta + angle * (M_PI / 180.0);
+                        x_prim = s_center_x + (d *cos(theta));
+                        z_prim = center_z + (d *sin(theta));
+                        // y_prim = center_y + (d *sin(theta));
+                        
+                        x_prim = radius +s_center_x+ x_prim;
+                        z_prim = radius +s_center_y + z_prim;
+                        if ((x >= w.ws_row) || (z >= w.ws_col)|| (x_prim >= w.ws_row) || (z_prim>= w.ws_col) ||(z_prim < 0)||(x_prim<0))
+                        break;
+                        new_arr[x_prim][z_prim] = arr[x][z];
+                        e +=1;
+    
+                    }
+                    j+=1;
+                }
+                printf("\n");
+                i +=1;
+                x+=1;
+               
+            }
+            angle +=1;
+        }
         
         
         // {'#','%','*','~','.'};
@@ -184,7 +457,7 @@ void ft_circle()
             col = 0;
             while(col < w.ws_col)
             {
-                printf("%c",arr[row][col]);
+                printf("%c",new_arr[row][col]);
                 col+=1;
             }
             row+=1;
@@ -199,28 +472,9 @@ void ft_circle()
             printf("Columns: %d\n", w.ws_col);
             exit(0);
         }
-        if (place_marker < (radius-1))
-        {
-            place_marker +=1;
-        }
-        else
-        {
-            place_marker = (-radius +1);
-    
-        }
-        printf("\n here --------> place mark: %d",place_marker);
-        // else if((place_marker <= radius) && (radius != 0))
-        // {
-        //     printf("---------->\n");
-        //     place_marker -= 1;
-        //     check = 0;
-        // }
-
-        // printf("\e[H\e[2J\e[3J");
-    //     // d_y -= 1;
-    //     d_x +=1;
-
-        // free(arr);
+        marker_angle_degrees += 1;
+        marker_angle_degrees = (int)marker_angle_degrees %360;
+        printf("\e[H\e[2J\e[3J");
         sleep(1); 
     }
     
@@ -235,19 +489,117 @@ int main(void)
 }
 
 
+//  while (i <= r)
+//     {
 
+//         e = -r_c;
+//         while (e <= r_c)
+//         {
+//             value = pow(r,2)- pow(i,2)-pow(e,2);
+//             if (value < 0)
+//             {
+//                 e +=1;
+//                 continue;
+//             }
+            
+//             j = sqrt(value);
+//             distanc_a = i - center_x;
+//             distanc_b = j - center_y;
+//             dz = e - center_z;
+            
+//             d = sqrt(pow(distanc_a, 2)+pow(distanc_b, 2)+pow(dz, 2));
+//             // d = -sqrt(pow(distanc_a, 2)+pow(distanc_b, 2)+pow(dz, 2));
+//             // d = sqrt(pow(distanc_a, 2)+pow(dz, 2));
+            
+//             x = radius+center_x+i;
+//             y = radius+center_y+j;
+//             z = radius + center_z + e;
+            
+            
+//             if ((x >= w.ws_row) || (y>= w.ws_col)|| (x >= w.ws_row))
+//             break;
+//             if(d <= 1)
+//             {
+//                 // arr[x][y] = character[3];
+//                 arr[x][y] = character[3];
+//             }
+//             else if (d <= 3)
+//             {
+//                 // arr[x][y] = character[2];
+//                 arr[x][z] = character[2];
+//             }
+//             else if(d <= 4)
+//             {
+//                 // arr[x][y] = character[1];
+//                 arr[x][z] = character[1];
+//             }
+//             else if(d <= radius)
+//             {
+//                 // arr[x][y] = character[0];
+//                 arr[x][z] = character[0];
+//             }
+//             else if(d <= radius)
+//             {
+//                 // arr[x][y] = character[4];
+//                 arr[x][z] = character[4];
+//                 // printf("herreeeeeeeeeee :%c\n",character[4]);
+//             }
+//             else
+//                 // arr[x][y] = ' ';
+//                 arr[x][z] = ' ';
 
-// distanc_a = i - 0;
-// distanc_b = j - 0;
-// // printf("the distance :%d\n",distanc_a);
-
-
-// d = sqrt(pow(distanc_a,2)+pow(distanc_b,2));
-// if (d <= radius)
-//     printf(".");
-// else
-//     printf(" ");
-// if (d <= radius)
-//     printf("+");
-// else
-//     printf("     ");
+//             j = -sqrt(value);
+//             distanc_a = i - center_x;
+//             distanc_b = j - center_y;
+//             dz = e - center_z;
+            
+//             d = sqrt(pow(distanc_a, 2)+pow(distanc_b, 2)+pow(dz, 2));
+//             // d = -sqrt(pow(distanc_a, 2)+pow(distanc_b, 2)+pow(dz, 2));
+//             // d = sqrt(pow(distanc_a, 2)+pow(dz, 2));
+            
+//             x = radius+center_x+i;
+//             y = radius+center_y+j;
+//             z = radius + center_z + e;
+            
+            
+//             if ((x >= w.ws_row) || (y>= w.ws_col)|| (x >= w.ws_row))
+//             break;
+//             if(d <= 1)
+//             {
+//                 // arr[x][y] = character[3];
+//                 arr[x][z] = character[3];
+//             }
+//             else if (d <= 3)
+//             {
+//                 // arr[x][y] = character[2];
+//                 arr[x][z] = character[2];
+//             }
+//             else if(d <= 4)
+//             {
+//                 // arr[x][y] = character[1];
+//                 arr[x][z] = character[1];
+//             }
+//             else if(d <= radius)
+//             {
+//                 // arr[x][y] = character[4];
+//                 arr[x][z] = character[4];
+//                 // printf("herreeeeeeeeeee :%c\n",character[4]);
+//             }
+//             else if(d <= radius)
+//             {
+//                 // arr[x][y] = character[4];
+//                 arr[x][z] = character[4];
+//                 // printf("herreeeeeeeeeee :%c\n",character[4]);
+//             }
+//             else
+//                 // arr[x][y] = ' ';
+//                 arr[x][z] = ' ';
+//             e +=1;
+//         }
+   
+//         printf("\n");
+//         i +=1;
+//         x+=1;     
+//     }
+    
+    
