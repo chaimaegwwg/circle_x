@@ -15,10 +15,12 @@ void ft_circle()
     int coor_x = 0;
     int coor_y = 0;
     int value =0;
-    int s_center_x = 0,s_center_y = 0;
-    int R = 3;
+    double new_x = 0;
+    double new_z = 0;
+    int s_center_x = 0,s_center_y = 0,camera_x = 0,camera_y=0,camera_z= -20;
+    int R = 3, focal = 20;
 
-    int x_prim = 0, y_prim = 0, z_prim=0;
+    int x_prim = 0, y_prim = 0, z_prim=0,x_p=0 ,y_p = 0, z_p = 0,screen_x = 0,screen_y=0;
     double sin_prim = 0;
     double cos_prim = 0;
     int center_x, center_y, r;
@@ -115,39 +117,51 @@ void ft_circle()
             x = radius+center_x+i;
             y = radius+center_y+j;
             z = radius + center_z + e;
-            
+            x_p = (radius+center_x+i) - camera_x;
+            y_p = (radius+center_y+j) - camera_y;
+            z_p = (radius + center_z + e) - camera_z;
+
+            screen_x = x_p * focal / z_p;
+            screen_y = y_p * focal / z_p;
+
             
             if ((x >= w.ws_row) || (y>= w.ws_col)|| (x >= w.ws_row))
             break;
             if(d <= 1)
             {
                 // arr[x][y] = character[3];
-                arr[x][y] = character[3];
+                // arr[x][z] = character[3];
+                arr[screen_x][screen_y]= character[3];
             }
             else if (d <= 3)
             {
                 // arr[x][y] = character[2];
-                arr[x][z] = character[2];
+                // arr[x][z] = character[2];
+                arr[screen_x][screen_y] = character[2];
             }
             else if(d <= 4)
             {
                 // arr[x][y] = character[1];
-                arr[x][z] = character[1];
+                // arr[x][z] = character[1];
+                arr[screen_x][screen_y] = character[1];
             }
             else if(d <= radius)
             {
                 // arr[x][y] = character[0];
-                arr[x][z] = character[0];
+                // arr[x][z] = character[0];
+                arr[screen_x][screen_y] = character[0];
             }
             else if(d <= radius)
             {
                 // arr[x][y] = character[4];
-                arr[x][z] = character[4];
+                // arr[x][z] = character[4];
+                arr[screen_x][screen_y] = character[4];
                 // printf("herreeeeeeeeeee :%c\n",character[4]);
             }
             else
                 // arr[x][y] = ' ';
-                arr[x][z] = ' ';
+                // arr[x][z] = ' ';
+                arr[screen_x][screen_y] = ' ';
 
             j = -sqrt(value);
             distanc_a = i - center_x;
@@ -161,6 +175,13 @@ void ft_circle()
             x = radius+center_x+i;
             y = radius+center_y+j;
             z = radius + center_z + e;
+
+            x_p = (radius+center_x+i) - camera_x;
+            y_p = (radius+center_y+j) - camera_y;
+            z_p = (radius + center_z + e) - camera_z;
+
+            screen_x = x_p * focal / z_p;
+            screen_y = y_p * focal / z_p;
             
             
             if ((x >= w.ws_row) || (y>= w.ws_col)|| (x >= w.ws_row))
@@ -168,33 +189,39 @@ void ft_circle()
             if(d <= 1)
             {
                 // arr[x][y] = character[3];
-                arr[x][z] = character[3];
+                // arr[x][z] = character[3];
+                arr[screen_x][screen_y] = character[3];
             }
             else if (d <= 3)
             {
                 // arr[x][y] = character[2];
-                arr[x][z] = character[2];
+                // arr[x][z] = character[2];
+                arr[screen_x][screen_y] = character[2];
             }
             else if(d <= 4)
             {
                 // arr[x][y] = character[1];
-                arr[x][z] = character[1];
+                // arr[x][z] = character[1];
+                arr[screen_x][screen_y] = character[1];
             }
             else if(d <= radius)
             {
                 // arr[x][y] = character[4];
-                arr[x][z] = character[4];
+                // arr[x][z] = character[0];
+                arr[screen_x][screen_y] = character[0];
                 // printf("herreeeeeeeeeee :%c\n",character[4]);
             }
             else if(d <= radius)
             {
                 // arr[x][y] = character[4];
-                arr[x][z] = character[4];
+                // arr[x][z] = character[4];
+                arr[screen_x][screen_y] = character[4];
                 // printf("herreeeeeeeeeee :%c\n",character[4]);
             }
             else
                 // arr[x][y] = ' ';
-                arr[x][z] = ' ';
+                // arr[x][z] = ' ';
+                arr[screen_x][screen_y] = ' ';
             e +=1;
         }
    
@@ -228,6 +255,7 @@ void ft_circle()
                 distanc_a = i - s_center_x;
                 distanc_b = j - s_center_y;
                 dz = e - center_z;
+
                 
                 d = sqrt(pow(distanc_a, 2)+pow(distanc_b, 2)+pow(dz, 2));
                 // R = sqrt(pow(distanc_a, 2)+pow(distanc_b, 2))-pow(dz,2);
@@ -236,38 +264,43 @@ void ft_circle()
                 y = radius+s_center_y+j;
                 z = radius + center_z + e;
                 
+                x_p = (radius+center_x+i) - camera_x;
+                y_p = (radius+center_y+j) - camera_y;
+                z_p = (radius + center_z + e) - camera_z;
+
+                screen_x = x_p * focal / z_p;
+                screen_y = y_p * focal / z_p;
                 
                 if ((x >= w.ws_row) || (y>= w.ws_col)|| (x >= w.ws_row))
                 break;
                 if(d <= 1)
                 {
                     // arr[x][y] = character[3];
-                    arr[x][y] = character[3];
+                    arr[screen_x][screen_y] = character[3];
                 }
                 else if (d <= 3)
                 {
                     // arr[x][y] = character[2];
-                    arr[x][z] = character[2];
+                    arr[screen_x][screen_y] = character[2];
                 }
                 else if(d <= 4)
                 {
                     // arr[x][y] = character[1];
-                    arr[x][z] = character[1];
+                    arr[screen_x][screen_y] = character[1];
                 }
                 else if(d <= radius)
                 {
                     // arr[x][y] = character[0];
-                    arr[x][z] = character[0];
+                    arr[screen_x][screen_y] = character[0];
                 }
                 else if(d <= radius)
                 {
                     // arr[x][y] = character[4];
-                    arr[x][z] = character[4];
-                    // printf("herreeeeeeeeeee :%c\n",character[4]);
+                    arr[screen_x][screen_y] = character[4];
                 }
                 else
                     // arr[x][y] = ' ';
-                    arr[x][z] = ' ';
+                    arr[screen_x][screen_y] = ' ';
 
                 j = -sqrt(value);
                 distanc_a = i - s_center_x;
@@ -281,40 +314,48 @@ void ft_circle()
                 x = radius+s_center_x+i;
                 y = radius+s_center_y+j;
                 z = radius + center_z + e;
-                
+
+
+                x_p = (radius+center_x+i) - camera_x;
+                y_p = (radius+center_y+j) - camera_y;
+                z_p = (radius + center_z + e) - camera_z;
+
+                screen_x = x_p * focal / z_p;
+                screen_y = y_p * focal / z_p;
                 
                 if ((x >= w.ws_row) || (y>= w.ws_col)|| (x >= w.ws_row))
                 break;
                 if(d <= 1)
                 {
                     // arr[x][y] = character[3];
-                    arr[x][z] = character[3];
+                    arr[screen_x][screen_y] = character[3];
                 }
                 else if (d <= 3)
                 {
                     // arr[x][y] = character[2];
-                    arr[x][z] = character[2];
+                    arr[screen_x][screen_y] = character[2];
                 }
                 else if(d <= 4)
                 {
                     // arr[x][y] = character[1];
-                    arr[x][z] = character[1];
+                    arr[screen_x][screen_y] = character[1];
+                }
+                else if(d <= radius)
+                {
+                    // arr[x][y] = character[0];
+                    arr[screen_x][screen_y] = character[0];
+                    // printf("herreeeeeeeeeee :%c\n",character[0]);
                 }
                 else if(d <= radius)
                 {
                     // arr[x][y] = character[4];
-                    arr[x][z] = character[4];
-                    // printf("herreeeeeeeeeee :%c\n",character[4]);
-                }
-                else if(d <= radius)
-                {
-                    // arr[x][y] = character[4];
-                    arr[x][z] = character[4];
+                    arr[screen_x][screen_y] = character[4];
                     // printf("herreeeeeeeeeee :%c\n",character[4]);
                 }
                 else
                     // arr[x][y] = ' ';
                     arr[x][z] = ' ';
+                    arr[screen_x][screen_y] = ' ';
                 e +=1;
             }
     
@@ -360,9 +401,17 @@ void ft_circle()
                     // d = sqrt(pow(distanc_a, 2)+pow(distanc_b, 2)+pow(dz, 2));
                     d = sqrt(pow(distanc_a, 2)+pow(dz, 2));
                     
+
                     x = radius+center_x+i;
                     y = radius+center_y+j;
                     z = radius +center_z+e;
+
+                    x_p = (radius+center_x+i) - camera_x;
+                    y_p = (radius+center_y+j) - camera_y;
+                    z_p = (radius + center_z + e) - camera_z;
+
+                    // screen_x = x_p * focal / z_p;
+                    // screen_y = y_p * focal / z_p;
                     
                     // ['#','%','*','~','.'];
                     // theta = atan2(distanc_b,distanc_a);
@@ -372,11 +421,21 @@ void ft_circle()
                     z_prim = center_z + (d *sin(theta));
                     // y_prim = center_y + (d *sin(theta));
                     
+                    new_x = x * cos(angle) - z * sin(angle);
+                    new_z = x * sin(angle) + z * cos(angle);
+                    
+                    screen_x = (new_x - camera_x) * focal / (new_z - camera_z);
+                    screen_y = (y - camera_y) * focal / (new_z - camera_z);
+                    
+                    
                     x_prim = radius +center_x+ x_prim;
                     z_prim = radius +center_y + z_prim;
                     if ((x >= w.ws_row) || (z >= w.ws_col)|| (x_prim >= w.ws_row) || (z_prim>= w.ws_col) ||(z_prim < 0)||(x_prim<0))
                     break;
-                    new_arr[x_prim][z_prim] = arr[x][z];
+                    // new_arr[x_prim][z_prim] = arr[x][z];
+
+                    // new_arr[x_prim][z_prim] = arr[screen_x][screen_y];
+                    new_arr[screen_x][screen_y] = character[0];
                     e +=1;
 
                 }
@@ -418,9 +477,18 @@ void ft_circle()
                         // d = sqrt(pow(distanc_a, 2)+pow(distanc_b, 2)+pow(dz, 2));
                         d = sqrt(pow(distanc_a, 2)+pow(dz, 2));
                         
+
+
                         x = radius+s_center_x+i;
                         y = radius+s_center_y+j;
                         z = radius +center_z+e;
+
+                        x_p = (radius+center_x+i) - camera_x;
+                        y_p = (radius+center_y+j) - camera_y;
+                        z_p = (radius + center_z + e) - camera_z;
+
+                        screen_x = x_p * focal / z_p;
+                        screen_y = y_p * focal / z_p;
                         
                         // ['#','%','*','~','.'];
                         // theta = atan2(distanc_b,distanc_a);
@@ -429,12 +497,20 @@ void ft_circle()
                         x_prim = s_center_x + (d *cos(theta));
                         z_prim = center_z + (d *sin(theta));
                         // y_prim = center_y + (d *sin(theta));
+
+                        new_x = x * cos(angle) - z * sin(angle);
+                        new_z = x * sin(angle) + z * cos(angle);
+                        
+                        screen_x = (new_x - camera_x) * focal / (new_z - camera_z);
+                        screen_y = (y - camera_y) * focal / (new_z - camera_z);
                         
                         x_prim = radius +s_center_x+ x_prim;
                         z_prim = radius +s_center_y + z_prim;
                         if ((x >= w.ws_row) || (z >= w.ws_col)|| (x_prim >= w.ws_row) || (z_prim>= w.ws_col) ||(z_prim < 0)||(x_prim<0))
                         break;
-                        new_arr[x_prim][z_prim] = arr[x][z];
+                        // new_arr[x_prim][z_prim] = arr[screen_x][screen_y];
+                        new_arr[screen_x][screen_y] = character[0];
+                        // new_arr[x_prim][z_prim] = arr[x_p][z_p];
                         e +=1;
     
                     }
